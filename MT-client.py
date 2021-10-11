@@ -4,11 +4,8 @@ import socket
 import datetime
 import csv
 import re
-import sys
+# import sys
 import os.path
-
-
-
 
 # Setting the host and port number from CLI arguments 
 # Second parameter for port is optional
@@ -21,6 +18,7 @@ import os.path
 
 HOST = os.environ['SCALE_HOST']
 PORT = int(os.environ['SCALE_PORT'])
+SCALE = int(os.environ['SCALE_NUM'])
 
 print(HOST)
 print(PORT)
@@ -33,7 +31,7 @@ KGTOPOUNDS = 2.2046
 
 def logweight(value):
     needs_header = True
-    csv_columns = ['Timestamp', 'Gross (kg)', 'Net (kg)', 'Tare (kg)','Gross (lb)', 'Net (lb)', 'Tare (lb)']
+    csv_columns = ['Scale', 'Timestamp', 'Gross (kg)', 'Net (kg)', 'Tare (kg)','Gross (lb)', 'Net (lb)', 'Tare (lb)']
     datestring = datetime.datetime.today().strftime("%Y%m%d")
     logfile = '/scaledata/log-'+datestring+'.csv'
     
@@ -62,6 +60,7 @@ def cleanString(input):
         out = re.sub("^(\w+\s*\w*:\s+)", "", line)
         values.append(out)
     values_dict = {
+        'Scale' : SCALE,
         'Timestamp' : values[0], 
         'Gross (kg)' : remove_kg(values[1]),
         'Net (kg)' : remove_kg(values[2]),
