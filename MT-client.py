@@ -6,11 +6,13 @@ import csv
 import re
 # import sys
 import os.path
+import mysql.connector 
+
 
 # Setting the host and port number from CLI arguments 
 # Second parameter for port is optional
 
-# HOST = sys.argv[1] 
+# HOST = sys.argv[1]
 # if len(sys.argv) > 2:
 #     PORT = int(sys.argv[2])
 # else:
@@ -81,5 +83,6 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         value = cleanString(msg)
         print(value)
         logweight(value)
+        # logtodb(value)
         
         

@@ -2,20 +2,41 @@ version: '3.4'
 
 services:
   mtclient_1:
+    build: .
     restart: always
+    depends_on:
+      - db
     environment:
       - SCALE_HOST=192.168.0.100
-      - SCALE_PORT=65436
+      - SCALE_PORT=65439
       - SCALE_NUM=1
-    image: mtclient
+    # image: mtclient
     volumes:
       - ./scaledata:/scaledata
-  mtclient_2:
+  # mtclient_2:
+  #   build: .
+  #   restart: always
+  #   environment:
+  #     - SCALE_HOST=192.168.0.100
+  #     - SCALE_PORT=65436
+  #     - SCALE_NUM=2
+  #   image: mtclient
+  #   volumes:
+  #     - ./scaledata:/scaledata
+  db:
     restart: always
+    image: mariadb
     environment:
-      - SCALE_HOST=192.168.0.100
-      - SCALE_PORT=65438
-      - SCALE_NUM=2
-    image: mtclient
+      - MYSQL_ROOT_PASSWORD=my_secret_pwd
+      - MYSQL_DATABASE=mt_scale
+      - MYSQL_USER=zsh
+      - MYSQL_PASSWORD=zshmt
+    ports:
+      - 3306:3306
     volumes:
-      - ./scaledata:/scaledata
+      - ./dbdata:/var/lib/mysql
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
