@@ -6,10 +6,10 @@ import csv
 import re
 # import sys
 import os.path
-import mysql.connector 
+from mysql.connector import connect, Error
 
 
-# Setting the host and port number from CLI arguments 
+# Setting the host and port number from CLI arguments
 # Second parameter for port is optional
 
 # HOST = sys.argv[1]
@@ -28,15 +28,46 @@ print(PORT)
 # HOST = '192.168.0.100'
 # PORT = 65436
 
-# Converison factor to convert kg to pounds 
+# Converison factor to convert kg to pounds
 KGTOPOUNDS = 2.2046
+
+#
+# MySQL Setup
+#
+
+
+def logtodb(value):
+    sql = """
+    INSERT INTO scales (scale, timestamp, gross, net, tare) VALUES ( %s, %s, %s, %s, %s)
+    """
+
+    try:
+        with connect(
+            host="db",
+            user="zsh",
+            password="zshmt",
+            database="mt_scale"
+        ) as connection:
+            # print(connection)
+            with connection.cursor() as cursor:
+                cursor.execute(sql, value)
+                connection.commit()
+    except Error as e:
+        print(e)
+
+
+def createquery(value):
+    res = SCALE, value['Timestamp'], value['Gross (kg)'], value['Net (kg)'], value['Tare (kg)']
+    return res
+
 
 def logweight(value):
     needs_header = True
-    csv_columns = ['Scale', 'Timestamp', 'Gross (kg)', 'Net (kg)', 'Tare (kg)','Gross (lb)', 'Net (lb)', 'Tare (lb)']
+    csv_columns = ['Scale', 'Timestamp',
+                   'Gross (kg)', 'Net (kg)', 'Tare (kg)', 'Gross (lb)', 'Net (lb)', 'Tare (lb)']
     datestring = datetime.datetime.today().strftime("%Y%m%d")
     logfile = '/scaledata/log-'+datestring+'.csv'
-    
+
     if os.path.isfile(logfile):
         needs_header = False
     else:
@@ -48,9 +79,11 @@ def logweight(value):
             writer.writeheader()
         writer.writerow(value)
 
+
 def remove_kg(val):
     out = val[:-3]
     return float(out)
+
 
 def cleanString(input):
     lines = input.splitlines()
@@ -62,15 +95,15 @@ def cleanString(input):
         out = re.sub("^(\w+\s*\w*:\s+)", "", line)
         values.append(out)
     values_dict = {
-        'Scale' : SCALE,
-        'Timestamp' : values[0], 
-        'Gross (kg)' : remove_kg(values[1]),
-        'Net (kg)' : remove_kg(values[2]),
-        'Tare (kg)' : remove_kg(values[3]),
-        'Net (lb)' : round((remove_kg(values[2])*KGTOPOUNDS),2),
-        'Gross (lb)' : round((remove_kg(values[1])*KGTOPOUNDS),2),
-        'Tare (lb)' : round((remove_kg(values[3])*KGTOPOUNDS),2)
-        }
+        'Scale': SCALE,
+        'Timestamp': values[0],
+        'Gross (kg)': remove_kg(values[1]),
+        'Net (kg)': remove_kg(values[2]),
+        'Tare (kg)': remove_kg(values[3]),
+        'Net (lb)': round((remove_kg(values[2])*KGTOPOUNDS), 2),
+        'Gross (lb)': round((remove_kg(values[1])*KGTOPOUNDS), 2),
+        'Tare (lb)': round((remove_kg(values[3])*KGTOPOUNDS), 2)
+    }
     # print(values_dict)
     return values_dict
 
@@ -84,5 +117,5 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         print(value)
         logweight(value)
         # logtodb(value)
-        
-        
+        sqlquery = createquery(value)
+        logtodb(sqlquery)
