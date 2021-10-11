@@ -13,11 +13,20 @@ import os.path
 # Setting the host and port number from CLI arguments 
 # Second parameter for port is optional
 
-HOST = sys.argv[1] 
-if len(sys.argv) > 2:
-    PORT = int(sys.argv[2])
-else:
-    PORT = 1025        # Default port for MT IND360 controller
+# HOST = sys.argv[1] 
+# if len(sys.argv) > 2:
+#     PORT = int(sys.argv[2])
+# else:
+#     PORT = 1025        # Default port for MT IND360 controller
+
+HOST = os.environ['SCALE_HOST']
+PORT = int(os.environ['SCALE_PORT'])
+
+print(HOST)
+print(PORT)
+
+# HOST = '192.168.0.100'
+# PORT = 65436
 
 # Converison factor to convert kg to pounds 
 KGTOPOUNDS = 2.2046
@@ -26,7 +35,7 @@ def logweight(value):
     needs_header = True
     csv_columns = ['Timestamp', 'Gross (kg)', 'Net (kg)', 'Tare (kg)','Gross (lb)', 'Net (lb)', 'Tare (lb)']
     datestring = datetime.datetime.today().strftime("%Y%m%d")
-    logfile = './log-'+datestring+'.csv'
+    logfile = '/scaledata/log-'+datestring+'.csv'
     
     if os.path.isfile(logfile):
         needs_header = False
