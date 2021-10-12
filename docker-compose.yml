@@ -7,7 +7,7 @@ services:
     depends_on:
       - db
     environment:
-      - SCALE_HOST=192.168.0.8
+      - SCALE_HOST=192.168.0.100
       - SCALE_PORT=1025
       - SCALE_NUM=1
     volumes:
@@ -17,8 +17,8 @@ services:
     build: .
     restart: always
     environment:
-      - SCALE_HOST=192.168.0.9
-      - SCALE_PORT=1025
+      - SCALE_HOST=192.168.0.100
+      - SCALE_PORT=1026
       - SCALE_NUM=2
     volumes:
       - ./scaledata:/scaledata
