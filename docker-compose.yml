@@ -7,8 +7,8 @@ services:
     depends_on:
       - db
     environment:
-      - SCALE_HOST=192.168.1.165
-      - SCALE_PORT=65437
+      - SCALE_HOST=192.168.0.100
+      - SCALE_PORT=63456
       - SCALE_NUM=1
     # image: mtclient
     volumes:
@@ -24,6 +24,7 @@ services:
   #   image: mtclient
   #   volumes:
   #     - ./scaledata:/scaledata
+
   db:
     restart: always
     image: mariadb
@@ -36,6 +37,7 @@ services:
       - 3306:3306
     volumes:
       - ./dbdata:/var/lib/mysql
+
   adminer:
     image: adminer
     restart: always

@@ -4,7 +4,6 @@ import socket
 import datetime
 import csv
 import re
-# import sys
 import os.path
 from mysql.connector import connect, Error
 
@@ -18,6 +17,10 @@ from mysql.connector import connect, Error
 # else:
 #     PORT = 1025        # Default port for MT IND360 controller
 
+#
+# Setting HOST and PORT from ENV variables provided through Docker Compose
+#
+
 HOST = os.environ['SCALE_HOST']
 PORT = int(os.environ['SCALE_PORT'])
 SCALE = int(os.environ['SCALE_NUM'])
@@ -25,20 +28,14 @@ SCALE = int(os.environ['SCALE_NUM'])
 print(HOST)
 print(PORT)
 
-# HOST = '192.168.0.100'
-# PORT = 65436
-
 # Converison factor to convert kg to pounds
 KGTOPOUNDS = 2.2046
-
-#
-# MySQL Setup
-#
 
 
 def logtodb(value):
     sql = """
-    INSERT INTO scales (scale, timestamp, gross, net, tare) VALUES ( %s, %s, %s, %s, %s)
+    INSERT INTO scales (scale_id, timestamp, gross_kg, net_kg, tare_kg, gross_lb, net_lb, tare_lb) 
+    VALUES ( %s, %s, %s, %s, %s, %s, %s, %s)
     """
 
     try:
@@ -48,7 +45,6 @@ def logtodb(value):
             password="zshmt",
             database="mt_scale"
         ) as connection:
-            # print(connection)
             with connection.cursor() as cursor:
                 cursor.execute(sql, value)
                 connection.commit()
@@ -57,7 +53,7 @@ def logtodb(value):
 
 
 def createquery(value):
-    res = SCALE, value['Timestamp'], value['Gross (kg)'], value['Net (kg)'], value['Tare (kg)']
+    res = SCALE, value['Timestamp'], value['Gross (kg)'], value['Net (kg)'], value['Tare (kg)'], value['Gross (lb)'], value['Net (lb)'], value['Tare (lb)']
     return res
 
 
@@ -94,6 +90,7 @@ def cleanString(input):
         # Remove the beginning of the string by using RegEx replacement
         out = re.sub("^(\w+\s*\w*:\s+)", "", line)
         values.append(out)
+    
     values_dict = {
         'Scale': SCALE,
         'Timestamp': values[0],
@@ -116,6 +113,5 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         value = cleanString(msg)
         print(value)
         logweight(value)
-        # logtodb(value)
         sqlquery = createquery(value)
         logtodb(sqlquery)
