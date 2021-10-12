@@ -7,23 +7,21 @@ services:
     depends_on:
       - db
     environment:
-      - SCALE_HOST=192.168.0.100
-      - SCALE_PORT=63456
+      - SCALE_HOST=192.168.0.8
+      - SCALE_PORT=1025
       - SCALE_NUM=1
-    # image: mtclient
     volumes:
       - ./scaledata:/scaledata
 
-  # mtclient_2:
-  #   build: .
-  #   restart: always
-  #   environment:
-  #     - SCALE_HOST=192.168.0.100
-  #     - SCALE_PORT=65436
-  #     - SCALE_NUM=2
-  #   image: mtclient
-  #   volumes:
-  #     - ./scaledata:/scaledata
+  mtclient_2:
+    build: .
+    restart: always
+    environment:
+      - SCALE_HOST=192.168.0.9
+      - SCALE_PORT=1025
+      - SCALE_NUM=2
+    volumes:
+      - ./scaledata:/scaledata
 
   db:
     restart: always
