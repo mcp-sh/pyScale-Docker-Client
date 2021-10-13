@@ -2,7 +2,6 @@ version: '3.4'
 
 services:
   mtclient_1:
-    # build: .
     image: mtclient
     restart: 'on-failure'
     depends_on:
@@ -15,7 +14,6 @@ services:
       - ./scaledata:/scaledata
 
   mtclient_2:
-    # build: .
     image: mtclient
     restart: 'on-failure'
     environment:
