@@ -2,23 +2,23 @@ version: '3.4'
 
 services:
   mtclient_1:
-    build: .
-    restart: always
+    build: ./dockerbuild
+    restart: 'on-failure'
     depends_on:
       - db
     environment:
       - SCALE_HOST=192.168.0.100
-      - SCALE_PORT=1025
+      - SCALE_PORT=1034
       - SCALE_NUM=1
     volumes:
       - ./scaledata:/scaledata
 
   mtclient_2:
-    build: .
-    restart: always
+    build: ./dockerbuild
+    restart: 'on-failure'
     environment:
       - SCALE_HOST=192.168.0.100
-      - SCALE_PORT=1026
+      - SCALE_PORT=1034
       - SCALE_NUM=2
     volumes:
       - ./scaledata:/scaledata
@@ -38,6 +38,6 @@ services:
 
   adminer:
     image: adminer
-    restart: always
+    restart: 'no'
     ports:
       - 8080:8080
