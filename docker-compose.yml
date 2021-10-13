@@ -11,7 +11,7 @@ services:
       - SCALE_PORT=1034
       - SCALE_NUM=1
     volumes:
-      - ./scaledata:/scaledata
+      - ./scaledata:./scaledata
 
   mtclient_2:
     build: ./dockerbuild
@@ -21,7 +21,7 @@ services:
       - SCALE_PORT=1034
       - SCALE_NUM=2
     volumes:
-      - ./scaledata:/scaledata
+      - ./scaledata:/app/scaledata
 
   db:
     restart: always
