@@ -2,7 +2,8 @@ version: '3.4'
 
 services:
   mtclient_1:
-    build: ./dockerbuild
+    # build: .
+    image: mtclient
     restart: 'on-failure'
     depends_on:
       - db
@@ -11,17 +12,18 @@ services:
       - SCALE_PORT=1034
       - SCALE_NUM=1
     volumes:
-      - ./scaledata:./scaledata
+      - ./scaledata:/scaledata
 
   mtclient_2:
-    build: ./dockerbuild
+    # build: .
+    image: mtclient
     restart: 'on-failure'
     environment:
       - SCALE_HOST=192.168.0.100
       - SCALE_PORT=1034
       - SCALE_NUM=2
     volumes:
-      - ./scaledata:/app/scaledata
+      - ./scaledata:/scaledata
 
   db:
     restart: always
