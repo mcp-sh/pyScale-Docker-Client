@@ -1,6 +1,6 @@
 DROP TABLE IF EXISTS `scales`;
 CREATE TABLE `scales` (
-  `batch_id` bigint unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `batch_id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `date` date NOT NULL,
   `time` time NOT NULL,
   `scale_id` tinyint(4) NOT NULL,
