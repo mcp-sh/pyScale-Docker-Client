@@ -122,7 +122,11 @@ def connect_to_scale(s):
         print(str(e))
         sys.exit(1)
     print(f'Connected to {HOST}:{PORT}')
-    res = s.recv(512)
+    try:
+        res = s.recv(512)
+    except ConnectionResetError:
+        print('Connection to scale reset')
+        sys.exit(1)
     rstr = res.decode('utf-8')
     print(f'Received message at {get_ts()}')
     handle_data(rstr)
