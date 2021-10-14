@@ -8,7 +8,7 @@ services:
       - db
     environment:
       - SCALE_HOST=192.168.0.100
-      - SCALE_PORT=1035
+      - SCALE_PORT=1036
       - SCALE_NUM=1
     volumes:
       - ./scaledata:/scaledata
@@ -21,8 +21,34 @@ services:
       - db
     environment:
       - SCALE_HOST=192.168.0.100
-      - SCALE_PORT=1035
+      - SCALE_PORT=1036
       - SCALE_NUM=2
+    volumes:
+      - ./scaledata:/scaledata
+      - ./script:/usr/src/app/script
+
+  mtclient_3:
+    image: mtclient
+    restart: always
+    depends_on:
+      - db
+    environment:
+      - SCALE_HOST=192.168.0.100
+      - SCALE_PORT=1036
+      - SCALE_NUM=3
+    volumes:
+      - ./scaledata:/scaledata
+      - ./script:/usr/src/app/script
+
+  mtclient_4:
+    image: mtclient
+    restart: always
+    depends_on:
+      - db
+    environment:
+      - SCALE_HOST=192.168.0.100
+      - SCALE_PORT=1036
+      - SCALE_NUM=4
     volumes:
       - ./scaledata:/scaledata
       - ./script:/usr/src/app/script

@@ -84,6 +84,7 @@ def cleanString(input):
         lines.pop(-1)
     except IndexError:
         print('Received a malformatted message')
+        print(input)
         sys.exit(1)
     values = []
 
