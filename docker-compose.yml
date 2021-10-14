@@ -61,13 +61,13 @@ services:
       - MYSQL_DATABASE=mt_scale
       - MYSQL_USER=zsh
       - MYSQL_PASSWORD=zshmt
-    ports:
-      - 3306:3306
     volumes:
       - ./dbdata:/var/lib/mysql
 
   adminer:
     image: adminer
+    depends_on:
+      - db
     restart: 'no'
     ports:
       - 8080:8080
