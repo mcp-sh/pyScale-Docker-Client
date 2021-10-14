@@ -7,6 +7,6 @@ RUN mkdir ./scaledata
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . .
+# COPY . .
 
-CMD [ "python", "./MT-client.py" ]
+CMD [ "python", "-u", "./script/MT-client.py" ]

@@ -3,25 +3,29 @@ version: '3.4'
 services:
   mtclient_1:
     image: mtclient
-    restart: 'on-failure'
+    restart: always
     depends_on:
       - db
     environment:
       - SCALE_HOST=192.168.0.100
-      - SCALE_PORT=1034
+      - SCALE_PORT=1035
       - SCALE_NUM=1
     volumes:
       - ./scaledata:/scaledata
+      - ./script:/usr/src/app/script
 
   mtclient_2:
     image: mtclient
-    restart: 'on-failure'
+    restart: always
+    depends_on:
+      - db
     environment:
       - SCALE_HOST=192.168.0.100
-      - SCALE_PORT=1034
+      - SCALE_PORT=1035
       - SCALE_NUM=2
     volumes:
       - ./scaledata:/scaledata
+      - ./script:/usr/src/app/script
 
   db:
     restart: always

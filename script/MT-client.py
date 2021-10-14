@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import sys
 import socket
 import datetime
 import csv
@@ -22,6 +23,9 @@ print(PORT)
 # Conversion factor to convert kg to pounds
 KGTOPOUNDS = 2.2046
 
+def get_ts():
+    ct = datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+    return ct
 
 def logtodb(value):
     sql = """
@@ -74,7 +78,11 @@ def remove_kg(val):
 
 def cleanString(input):
     lines = input.splitlines()
-    lines.pop(-1)
+    try:
+        lines.pop(-1)
+    except IndexError:
+        print('Received an malformatted message')
+        sys.exit(1)
     values = []
 
     for line in lines:
@@ -96,7 +104,7 @@ def cleanString(input):
 
 def handle_data(msg):
     value = cleanString(msg)
-    print(value)
+    # print(value)
     log_to_csv(value)
     sqlquery = createquery(value)
     logtodb(sqlquery)
@@ -106,8 +114,11 @@ def connect_to_scale(s):
         s.connect((HOST, PORT))
     except socket.error as e:
         print(str(e))
+        sys.exit(1)
+    print(f'Connected to {HOST}:{PORT}')
     res = s.recv(512)
     rstr = res.decode('utf-8')
+    print(f'Received message at {get_ts()}')
     handle_data(rstr)
     match = re.search('\*{5,30}', rstr )
     if match:
@@ -119,8 +130,8 @@ rounds = 1
 
 while True:
     ClientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    print(f'Attempt number: {rounds}')
+    ct = get_ts()
+    print(f'{ct} Connecting to scale {SCALE}...')
     connect_to_scale(ClientSocket)
-    # time.sleep(3)
     rounds += 1
 
