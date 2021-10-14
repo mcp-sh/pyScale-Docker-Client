@@ -29,8 +29,8 @@ def get_ts():
 
 def logtodb(value):
     sql = """
-    INSERT INTO scales (scale_id, timestamp, gross_kg, net_kg, tare_kg, gross_lb, net_lb, tare_lb) 
-    VALUES ( %s, %s, %s, %s, %s, %s, %s, %s)
+    INSERT INTO scales (scale_id, date, time, gross_kg, net_kg, tare_kg, gross_lb, net_lb, tare_lb) 
+    VALUES ( %s, %s, %s, %s, %s, %s, %s, %s, %s)
     """
 
     try:
@@ -48,14 +48,16 @@ def logtodb(value):
 
 
 def createquery(value):
-    res = SCALE, value['Timestamp'], value['Gross (kg)'], value['Net (kg)'], value['Tare (kg)'], value['Gross (lb)'], value['Net (lb)'], value['Tare (lb)']
+    res = SCALE, value['Date'], value['Time'], value['Gross (kg)'], value['Net (kg)'], value['Tare (kg)'], value['Gross (lb)'], value['Net (lb)'], value['Tare (lb)']
     return res
 
 
 def log_to_csv(value):
     needs_header = True
-    csv_columns = ['Scale', 'Timestamp',
-                   'Gross (kg)', 'Net (kg)', 'Tare (kg)', 'Gross (lb)', 'Net (lb)', 'Tare (lb)']
+    csv_columns = ['Scale', 'Date', 'Time',
+                   'Gross (kg)', 'Net (kg)', 'Tare (kg)',
+                   'Gross (lb)', 'Net (lb)', 'Tare (lb)' 
+                   ]
     datestring = datetime.datetime.today().strftime("%Y%m%d")
     logfile = '/scaledata/log-'+datestring+'.csv'
 
@@ -81,7 +83,7 @@ def cleanString(input):
     try:
         lines.pop(-1)
     except IndexError:
-        print('Received an malformatted message')
+        print('Received a malformatted message')
         sys.exit(1)
     values = []
 
@@ -90,9 +92,13 @@ def cleanString(input):
         out = re.sub("^(\w+\s*\w*:\s+)", "", line)
         values.append(out)
     
+    ts_item = re.split(r'\s+', values[0])
+    insert_date = datetime.datetime.strptime(ts_item[1], "%d/%m/%Y").strftime("%Y-%m-%d")
+    
     values_dict = {
         'Scale': SCALE,
-        'Timestamp': values[0],
+        'Date': insert_date,
+        'Time': ts_item[0],
         'Gross (kg)': remove_kg(values[1]),
         'Net (kg)': remove_kg(values[2]),
         'Tare (kg)': remove_kg(values[3]),
@@ -104,7 +110,6 @@ def cleanString(input):
 
 def handle_data(msg):
     value = cleanString(msg)
-    # print(value)
     log_to_csv(value)
     sqlquery = createquery(value)
     logtodb(sqlquery)
@@ -123,15 +128,14 @@ def connect_to_scale(s):
     match = re.search('\*{5,30}', rstr )
     if match:
         print('Message complete')
-        print('Closing Connection')
+        print('Closing connection')
         s.close()
 
 rounds = 1
 
 while True:
     ClientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    ct = get_ts()
-    print(f'{ct} Connecting to scale {SCALE}...')
+    print(f'{get_ts()} Connecting to scale {SCALE}...')
     connect_to_scale(ClientSocket)
     rounds += 1
 
