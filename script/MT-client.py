@@ -17,9 +17,6 @@ SCALE = int(os.environ['SCALE_NUM'])
 # PORT = 1033
 # SCALE = 1
 
-print(HOST)
-print(PORT)
-
 # Conversion factor to convert kg to pounds
 KGTOPOUNDS = 2.2046
 
@@ -129,9 +126,10 @@ def connect_to_scale(s):
         sys.exit(1)
     rstr = res.decode('utf-8')
     print(f'Received message at {get_ts()}')
-    handle_data(rstr)
+    print(f'Message: {rstr}')
     match = re.search('\*{5,30}', rstr )
     if match:
+        handle_data(rstr)
         print('Message complete')
         print('Closing connection')
         s.close()
