@@ -126,7 +126,7 @@ def connect_to_scale(s):
         sys.exit(1)
     rstr = res.decode('utf-8')
     print(f'Received message at {get_ts()}')
-    print(f'Message: {rstr}')
+    # print(f'Message: {rstr}')
     match = re.search('\*{5,30}', rstr )
     if match:
         handle_data(rstr)
