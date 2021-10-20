@@ -134,11 +134,8 @@ def connect_to_scale(s):
         print('Closing connection')
         s.close()
 
-rounds = 1
-
 while True:
     ClientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     print(f'{get_ts()} Connecting to scale {SCALE}...')
     connect_to_scale(ClientSocket)
-    rounds += 1
 
