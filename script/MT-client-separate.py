@@ -56,7 +56,7 @@ def log_to_csv(value):
                    'Gross (lb)', 'Net (lb)', 'Tare (lb)' 
                    ]
     datestring = datetime.datetime.today().strftime("%Y%m%d")
-    logfile = f'/scaledata/log-{datestring}-{SCALE}.csv'
+    logfile = f'/scaledata/scale_{SCALE}-{datestring}.csv'
 
     if os.path.isfile(logfile):
         needs_header = False
