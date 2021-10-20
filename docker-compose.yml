@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   mtclient_1:
-    image: mtclient
+    image: mtclient-s
     restart: always
     depends_on:
       - db
@@ -15,7 +15,7 @@ services:
       - ./script:/usr/src/app/script
 
   mtclient_2:
-    image: mtclient
+    image: mtclient-s
     restart: always
     depends_on:
       - db
@@ -28,7 +28,7 @@ services:
       - ./script:/usr/src/app/script
 
   mtclient_3:
-    image: mtclient
+    image: mtclient-s
     restart: always
     depends_on:
       - db
@@ -41,7 +41,7 @@ services:
       - ./script:/usr/src/app/script
 
   mtclient_4:
-    image: mtclient
+    image: mtclient-s
     restart: always
     depends_on:
       - db
